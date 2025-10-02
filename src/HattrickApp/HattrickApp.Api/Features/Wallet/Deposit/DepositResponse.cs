@@ -2,5 +2,5 @@
 
 public class DepositResponse
 {
-    public required decimal NewWalletBalance { get; set; }
+    public required decimal NewWalletBalance { get; init; }
 }
