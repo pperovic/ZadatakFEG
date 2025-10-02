@@ -1,4 +1,5 @@
 using HattrickApp.Api.Persistence;
+using HattrickApp.Api.Seeder;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -18,6 +19,13 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+}
+
+// Run the seeder
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    HattrickAppDbContext dbContext = scope.ServiceProvider.GetRequiredService<HattrickAppDbContext>();
+    await DbSeeder.SeedAsync(dbContext);
 }
 
 app.UseHttpsRedirection();
