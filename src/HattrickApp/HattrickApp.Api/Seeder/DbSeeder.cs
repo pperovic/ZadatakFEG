@@ -1,4 +1,5 @@
 ﻿using HattrickApp.Api.Entities;
+using HattrickApp.Api.Enums;
 using HattrickApp.Api.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ public static class DbSeeder
 
         await SeedUsersAsync(dbContext);
         await SeedWalletsAsync(dbContext);
+        await SeedOffersAsync(dbContext);
         
         await dbContext.SaveChangesAsync();
     }
@@ -55,5 +57,46 @@ public static class DbSeeder
         };
 
         await dbContext.Wallets.AddAsync(wallet);
+    }
+    
+    private static async Task SeedOffersAsync(HattrickAppDbContext dbContext)
+    {
+        if (await dbContext.Offers.AnyAsync())
+        {
+            return;
+        }
+
+        var footballOffer = new Offer
+        {
+            Id = Guid.NewGuid(),
+            SportType = SportType.Football,
+            FirstCompetitor = "Manchester United",
+            SecondCompetitor = "Chelsea",
+            StartTime = DateTimeOffset.Now.AddDays(1),
+            IsTopOffer = true,
+            Tips = new List<OfferTip>
+            {
+                new() { Id = Guid.NewGuid(), TipCode = "1", Quota = 1.85m },
+                new() { Id = Guid.NewGuid(), TipCode = "X", Quota = 3.40m },
+                new() { Id = Guid.NewGuid(), TipCode = "2", Quota = 2.95m }
+            }
+        };
+
+        var tennisOffer = new Offer
+        {
+            Id = Guid.NewGuid(),
+            SportType = SportType.Tennis,
+            FirstCompetitor = "Rafael Nadal",
+            SecondCompetitor = "Roger Federer",
+            StartTime = DateTimeOffset.Now.AddDays(1),
+            IsTopOffer = false,
+            Tips = new List<OfferTip>
+            {
+                new() { Id = Guid.NewGuid(), TipCode = "1", Quota = 1.65m },
+                new() { Id = Guid.NewGuid(), TipCode = "2", Quota = 2.20m }
+            }
+        };
+
+        await dbContext.Offers.AddRangeAsync(footballOffer, tennisOffer);
     }
 }

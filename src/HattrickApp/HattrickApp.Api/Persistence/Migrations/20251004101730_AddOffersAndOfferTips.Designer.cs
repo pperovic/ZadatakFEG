@@ -4,6 +4,7 @@ using HattrickApp.Api.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HattrickApp.Api.Persistence.Migrations
 {
     [DbContext(typeof(HattrickAppDbContext))]
-    partial class HattrickAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251004101730_AddOffersAndOfferTips")]
+    partial class AddOffersAndOfferTips
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace HattrickApp.Api.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offer");
                 });
 
             modelBuilder.Entity("HattrickApp.Api.Entities.OfferTip", b =>
@@ -76,7 +79,7 @@ namespace HattrickApp.Api.Persistence.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("OfferTips", (string)null);
+                    b.ToTable("OfferTip");
                 });
 
             modelBuilder.Entity("HattrickApp.Api.Entities.User", b =>
@@ -92,7 +95,7 @@ namespace HattrickApp.Api.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HattrickApp.Api.Entities.Wallet", b =>
@@ -113,7 +116,7 @@ namespace HattrickApp.Api.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wallets", (string)null);
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("HattrickApp.Api.Entities.WalletTransaction", b =>
@@ -141,7 +144,7 @@ namespace HattrickApp.Api.Persistence.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("WalletTransactions", (string)null);
+                    b.ToTable("WalletTransactions");
                 });
 
             modelBuilder.Entity("HattrickApp.Api.Entities.OfferTip", b =>

@@ -9,6 +9,8 @@ public class HattrickAppDbContext(DbContextOptions<HattrickAppDbContext> options
     public DbSet<User> Users { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
     public DbSet<WalletTransaction> WalletTransactions { get; set; }
+    public DbSet<Offer> Offers { get; set; }
+    public DbSet<OfferTip> OfferTips { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,6 +46,32 @@ public class HattrickAppDbContext(DbContextOptions<HattrickAppDbContext> options
             
             entity.Property(w => w.Amount)
                 .HasPrecision(18, 2);
+        });
+        
+        modelBuilder.Entity<Offer>(entity =>
+        {
+            entity.Property(o => o.FirstCompetitor)
+                .HasMaxLength(100); 
+
+            entity.Property(o => o.SecondCompetitor)
+                .HasMaxLength(100);
+
+            entity.Property(e => e.SportType)
+                .HasConversion<string>()
+                .HasMaxLength(20);
+
+            entity.HasMany(o => o.Tips)
+                .WithOne(t => t.Offer)
+                .HasForeignKey(t => t.OfferId);
+        });
+        
+        modelBuilder.Entity<OfferTip>(entity =>
+        {
+            entity.Property(t => t.TipCode)
+                .HasMaxLength(10);
+
+            entity.Property(t => t.Quota)
+                .HasPrecision(5, 2); 
         });
     }
 }
