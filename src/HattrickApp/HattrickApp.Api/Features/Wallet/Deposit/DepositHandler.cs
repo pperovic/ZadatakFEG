@@ -28,31 +28,31 @@ public static class DepositHandler
                 return Result<DepositResponse>.Failure(validationResult.Errors);
             }
             
-            Entities.Wallet? wallet = await dbContext.Wallets
+            Entities.Wallet? existingUserWallet = await dbContext.Wallets
                 .FirstOrDefaultAsync(w => w.Id == request.WalletId, cancellationToken);
             
-            if (wallet is null)
+            if (existingUserWallet is null)
             {
                 return Result<DepositResponse>.Failure(ErrorMessage.NotFound(ApiConstants.Wallet));
             }
             
-            wallet.Balance += request.Amount;
-            var transaction = new WalletTransaction
+            existingUserWallet.Balance += request.Amount;
+            var newWalletTransaction = new WalletTransaction
             {
                 Id = Guid.NewGuid(),
-                WalletId = wallet.Id,
+                WalletId = existingUserWallet.Id,
                 Amount = request.Amount,
                 TransactionType = TransactionType.Deposit,
                 CreatedAt = DateTimeOffset.UtcNow
             };
             
-            await dbContext.WalletTransactions.AddAsync(transaction, cancellationToken);
+            await dbContext.WalletTransactions.AddAsync(newWalletTransaction, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
             
             // response here would depend on how we do things on ui
             return Result<DepositResponse>.Success(new DepositResponse
             {
-                NewWalletBalance = wallet.Balance
+                NewWalletBalance = existingUserWallet.Balance
             });
             
         }
