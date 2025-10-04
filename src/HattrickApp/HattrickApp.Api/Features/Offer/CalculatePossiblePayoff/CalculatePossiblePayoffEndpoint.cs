@@ -6,6 +6,9 @@ using MediatR;
 
 namespace HattrickApp.Api.Features.Offer.CalculatePossiblePayoff;
 
+/// <summary>
+/// Can be used to show possible payoff on ui before creating a ticket
+/// </summary>
 public class CalculatePossiblePayoffEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app) =>

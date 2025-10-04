@@ -7,6 +7,9 @@ using MediatR;
 
 namespace HattrickApp.Api.Features.Offer.GetAll;
 
+/// <summary>
+/// Gets all offers as paginated response
+/// </summary>
 public class GetAllEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app) => 

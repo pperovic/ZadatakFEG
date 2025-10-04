@@ -6,6 +6,9 @@ using MediatR;
 
 namespace HattrickApp.Api.Features.Wallet.Deposit;
 
+/// <summary>
+/// Deposit money into user's wallet
+/// </summary>
 public class DepositEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app) => 
