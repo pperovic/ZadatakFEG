@@ -6,7 +6,8 @@ namespace HattrickApp.Api.Seeder;
 
 public static class DbSeeder
 {
-    private const string TestUsernaName = "testuser";
+    private const string TestUserName = "testuser";
+    
     public static async Task SeedAsync(HattrickAppDbContext dbContext)
     {
         await dbContext.Database.MigrateAsync();
@@ -19,7 +20,7 @@ public static class DbSeeder
     
     private static async Task SeedUsersAsync(HattrickAppDbContext dbContext)
     {
-        if (dbContext.Users.Any())
+        if (await dbContext.Users.AnyAsync())
         {
             return;
         }
@@ -27,7 +28,7 @@ public static class DbSeeder
         var user = new User
         {
             Id = Guid.NewGuid(),
-            UserName = TestUsernaName
+            UserName = TestUserName
         };
 
        await dbContext.Users.AddAsync(user);
@@ -40,7 +41,7 @@ public static class DbSeeder
             return;
         }
 
-        User? user =  dbContext.Users.Local.FirstOrDefault(u => u.UserName == TestUsernaName);
+        User? user =  dbContext.Users.Local.FirstOrDefault(u => u.UserName == TestUserName);
         if (user is null)
         {
             throw new InvalidOperationException("User must exist before creating wallet.");
