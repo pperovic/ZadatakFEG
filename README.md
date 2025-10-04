@@ -13,5 +13,7 @@ Result pattern is added and it's just something simple i copy around my personal
 
 Mapster is added for mapping speed and simplicity here, but usually would prefer manual mapping
 
+Db seeder is kept basic, would usually come from json files, mapped to dtos and validated before inserts.
+
 Tests are not included, but if needed, integrations tests would be added.
 If unit tests for some reason are requirement I would use repository pattern.
