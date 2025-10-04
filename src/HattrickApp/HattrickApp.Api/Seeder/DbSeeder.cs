@@ -81,6 +81,24 @@ public static class DbSeeder
                 new() { Id = Guid.NewGuid(), TipCode = "2", Quota = 2.95m }
             }
         };
+        
+        
+        var footBallOfferNoQuotas = new Offer
+        {
+            Id = Guid.NewGuid(),
+            SportType = SportType.Football,
+            FirstCompetitor = "Real Madrid",
+            SecondCompetitor = "Barcelona",
+            StartTime = DateTimeOffset.Now.AddDays(1),
+            IsTopOffer = true,
+            Tips = new List<OfferTip>
+            {
+                new() { Id = Guid.NewGuid(), TipCode = "1", },
+                new() { Id = Guid.NewGuid(), TipCode = "X",  },
+                new() { Id = Guid.NewGuid(), TipCode = "2" }
+            }
+        };
+        
 
         var tennisOffer = new Offer
         {
@@ -97,6 +115,6 @@ public static class DbSeeder
             }
         };
 
-        await dbContext.Offers.AddRangeAsync(footballOffer, tennisOffer);
+        await dbContext.Offers.AddRangeAsync(footballOffer, footBallOfferNoQuotas, tennisOffer);
     }
 }
