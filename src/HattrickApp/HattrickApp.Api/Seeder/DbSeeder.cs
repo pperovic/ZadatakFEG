@@ -1,4 +1,5 @@
-﻿using HattrickApp.Api.Entities;
+﻿using HattrickApp.Api.Common;
+using HattrickApp.Api.Entities;
 using HattrickApp.Api.Enums;
 using HattrickApp.Api.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -76,9 +77,12 @@ public static class DbSeeder
             IsTopOffer = true,
             Tips = new List<OfferTip>
             {
-                new() { Id = Guid.NewGuid(), TipCode = "1", Quota = 1.85m },
-                new() { Id = Guid.NewGuid(), TipCode = "X", Quota = 3.40m },
-                new() { Id = Guid.NewGuid(), TipCode = "2", Quota = 2.95m }
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWin, Quota = 1.85m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.Draw, Quota = 3.40m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.SecondCompetitorWin, Quota = 2.95m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWinOrDraw, Quota = 1.95m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.SecondCompetitorWinOrDraw, Quota = 2.95m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirsOrSecondCompetitorWin, Quota = 1.35m }
             }
         };
         
@@ -93,9 +97,9 @@ public static class DbSeeder
             IsTopOffer = true,
             Tips = new List<OfferTip>
             {
-                new() { Id = Guid.NewGuid(), TipCode = "1", },
-                new() { Id = Guid.NewGuid(), TipCode = "X",  },
-                new() { Id = Guid.NewGuid(), TipCode = "2" }
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWin, },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.Draw,  },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.SecondCompetitorWin }
             }
         };
         
@@ -110,8 +114,8 @@ public static class DbSeeder
             IsTopOffer = false,
             Tips = new List<OfferTip>
             {
-                new() { Id = Guid.NewGuid(), TipCode = "1", Quota = 1.65m },
-                new() { Id = Guid.NewGuid(), TipCode = "2", Quota = 2.20m }
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWin, Quota = 1.65m },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.SecondCompetitorWin, Quota = 2.20m }
             }
         };
 
