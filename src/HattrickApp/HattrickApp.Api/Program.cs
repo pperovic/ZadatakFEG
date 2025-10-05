@@ -3,6 +3,7 @@ using FluentValidation;
 using HattrickApp.Api.Common.ConfigurationOptions;
 using HattrickApp.Api.Persistence;
 using HattrickApp.Api.Seeder;
+using HattrickApp.Api.Services.BetCalculationService;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -25,6 +26,8 @@ builder.Services.AddMediatR(config =>
     config.RegisterServicesFromAssembly(typeof(Program).Assembly);
     config.LicenseKey = mediatrOptions?.CommunityLicenseKey;
 });
+
+builder.Services.AddScoped<IBetCalculationService, BetCalculationService>();
 
 WebApplication app = builder.Build();
 

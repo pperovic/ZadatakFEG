@@ -4,4 +4,5 @@ public static class EndpointTags
 {
     public const string Wallet = nameof(Wallet);
     public const string Offer = nameof(Offer);
+    public const string Ticket = nameof(Ticket);
 }

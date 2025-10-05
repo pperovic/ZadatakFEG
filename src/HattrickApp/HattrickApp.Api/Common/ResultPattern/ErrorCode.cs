@@ -3,4 +3,6 @@
 public enum ErrorCode
 {
     NotFound,
+    InvalidValues,
+    MoreThanOneNotAllowed
 }

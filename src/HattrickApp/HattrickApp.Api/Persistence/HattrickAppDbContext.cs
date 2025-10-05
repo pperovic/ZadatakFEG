@@ -11,6 +11,8 @@ public class HattrickAppDbContext(DbContextOptions<HattrickAppDbContext> options
     public DbSet<WalletTransaction> WalletTransactions { get; set; }
     public DbSet<Offer> Offers { get; set; }
     public DbSet<OfferTip> OfferTips { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<TicketSelection> TicketSelections { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,6 +74,27 @@ public class HattrickAppDbContext(DbContextOptions<HattrickAppDbContext> options
 
             entity.Property(t => t.Quota)
                 .HasPrecision(5, 2); 
+        });
+        
+        modelBuilder.Entity<Ticket>(entity =>
+        {
+            entity.Property(t => t.BetAmount).HasPrecision(18, 2);
+            entity.Property(t => t.ManipulativeCost).HasPrecision(18, 2);
+            entity.Property(t => t.TotalQuota).HasPrecision(8, 2);
+            entity.Property(t => t.PossibleWinBeforeTax).HasPrecision(18, 2);
+            entity.Property(t => t.TaxAmount).HasPrecision(18, 2);
+            entity.Property(t => t.PossibleWinAfterTax).HasPrecision(18, 2);
+
+            entity.HasMany(t => t.TicketSelections)
+                .WithOne(s => s.Ticket)
+                .HasForeignKey(s => s.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<TicketSelection>(entity =>
+        {
+            entity.Property(s => s.ChosenTipCode).HasMaxLength(10);
+            entity.Property(s => s.ChosenTipCodeQuota).HasPrecision(5, 2);
         });
     }
 }
