@@ -9,4 +9,5 @@ public class ApiConstants
     public const string TopOffer = "Top Offer";
     public const string Quota = nameof(Quota);
     public const string Ticket = nameof(Ticket);
+    public const string User = nameof(User);
 }
