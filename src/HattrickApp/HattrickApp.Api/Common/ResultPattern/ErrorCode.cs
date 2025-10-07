@@ -4,5 +4,6 @@ public enum ErrorCode
 {
     NotFound,
     InvalidValues,
-    MoreThanOneNotAllowed
+    MoreThanOneNotAllowed,
+    WalletBalanceExceeded
 }

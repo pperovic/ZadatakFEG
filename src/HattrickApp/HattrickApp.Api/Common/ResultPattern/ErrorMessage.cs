@@ -9,4 +9,7 @@ public static class ErrorMessage
 
     public static Error MoreThanOneNotAllowed(string entity, string property) => new(
         $"A {entity} cannot contain more than one {property}", nameof(ErrorCode.MoreThanOneNotAllowed));
+    
+    public static Error WalletBalanceExceeded() => new(
+        "Not enough funds available in user's wallet.", nameof(ErrorCode.WalletBalanceExceeded));
 }

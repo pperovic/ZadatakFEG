@@ -17,3 +17,5 @@ Db seeder is kept basic, would usually come from json files, mapped to dtos and 
 
 Tests are not included, but if needed, integrations tests would be added.
 If unit tests for some reason are requirement I would use repository pattern.
+
+All wallet transaction would be probably coming from some service, in this example it's just a mock.

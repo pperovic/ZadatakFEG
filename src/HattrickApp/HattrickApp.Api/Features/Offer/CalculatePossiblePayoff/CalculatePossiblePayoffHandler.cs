@@ -23,7 +23,7 @@ public class CalculatePossiblePayoffHandler
                 return Result<CalculatePossiblePayoffResponse>.Failure(validationResult.Errors);
             }
 
-            BetCalculationResultDto result = betCalculationService.Calculate(request.BetAmount, request.SelectedQuotas);
+            BetCalculationResultDto result = betCalculationService.CalculateBetInfo(request.BetAmount, request.SelectedQuotas);
             
             return await Task.FromResult(Result<CalculatePossiblePayoffResponse>.Success(new CalculatePossiblePayoffResponse
             {

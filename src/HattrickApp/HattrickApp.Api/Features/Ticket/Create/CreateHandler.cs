@@ -26,19 +26,12 @@ public static  class CreateHandler
             if (!validationResult.IsValid)
             {
                 return Result<CreateResponse>.Failure(validationResult.Errors);
-                
             }
             
-            var offerIds = request.Selections.Select(s => s.OfferId).ToList();
+            IReadOnlyList<Guid> offerIds = SelectOfferIdsFromRequestSelections(request.Selections);
+            List<OfferTip> selectedTips = await GetOfferTipsForSelectedOfferIds(offerIds, cancellationToken);
 
-            List<OfferTip> selectedTips = await dbContext.OfferTips
-                .Where(t => offerIds.Contains(t.OfferId))
-                .ToListAsync(cancellationToken);
-
-            // validate in memory: only keep tips that match both OfferId + TipCode
-            selectedTips = selectedTips
-                .Where(t => request.Selections.Any(s => s.OfferId == t.OfferId && s.TipCode == t.TipCode))
-                .ToList();
+            selectedTips = FilterTipsThatMatchRequestSelectionsOfferIdAndTipCode(request.Selections, selectedTips);
 
             if (selectedTips.Count != request.Selections.Count)
             {
@@ -51,9 +44,7 @@ public static  class CreateHandler
                     ApiConstants.Quota));
             }
 
-            int topOffersCount = await dbContext.Offers
-                .Where(o => offerIds.Contains(o.Id) && o.IsTopOffer)
-                .CountAsync(cancellationToken);
+            int topOffersCount = await GetTopOffersCount(offerIds, cancellationToken);
 
             if (topOffersCount > 1)
             {
@@ -61,19 +52,33 @@ public static  class CreateHandler
                     ErrorMessage.MoreThanOneNotAllowed(ApiConstants.Ticket, ApiConstants.TopOffer));
             }
 
-            var quotas = selectedTips.Select(t => t.Quota!.Value).ToList();
-            BetCalculationResultDto betResult = betCalculationService.Calculate(request.BetAmount, quotas);
+            Entities.Wallet? userWallet =  await GetUserWallet(request.UserId, cancellationToken);
+            if (userWallet is null)
+            {
+                return Result<CreateResponse>.Failure(ErrorMessage.NotFound(ApiConstants.Wallet));
+            }
+
+            if (IsUserBalanceExceeded(userWallet.Balance, request.BetAmount))
+            {
+                return Result<CreateResponse>.Failure(
+                    ErrorMessage.WalletBalanceExceeded());
+            }
+            
+            RemoveRequiredBetFundsFromUsersWallet(userWallet, request.BetAmount);
+
+            IEnumerable<decimal> selectedTipsQuotas = ExtractSelectedTipsQuotas(selectedTips);
+            BetCalculationResultDto betCalculationResult = betCalculationService.CalculateBetInfo(request.BetAmount, selectedTipsQuotas);
             
             var ticket = new Entities.Ticket
             {
                 Id = Guid.NewGuid(),
                 UserId = request.UserId,
-                BetAmount = betResult.FullBetPlaced,
-                ManipulativeCost = betResult.ManipulativeCost,
-                TotalQuota = betResult.TotalQuota,
-                PossibleWinBeforeTax = betResult.PossibleWinBeforeTax,
-                TaxAmount = betResult.TaxAmount,
-                PossibleWinAfterTax = betResult.PossibleWinAfterTax,
+                BetAmount = betCalculationResult.FullBetPlaced,
+                ManipulativeCost = betCalculationResult.ManipulativeCost,
+                TotalQuota = betCalculationResult.TotalQuota,
+                PossibleWinBeforeTax = betCalculationResult.PossibleWinBeforeTax,
+                TaxAmount = betCalculationResult.TaxAmount,
+                PossibleWinAfterTax = betCalculationResult.PossibleWinAfterTax,
                 CreatedAt = DateTimeOffset.UtcNow,
                 TicketSelections = selectedTips.Select(t => new TicketSelection
                 {
@@ -106,5 +111,41 @@ public static  class CreateHandler
       
             return Result<CreateResponse>.Success(response);
         }
+
+        private static List<OfferTip> FilterTipsThatMatchRequestSelectionsOfferIdAndTipCode(
+            IReadOnlyList<CreateTicketSelectionDto> requestSelections,
+            List<OfferTip> selectedTips) =>
+            selectedTips
+                .Where(t => requestSelections.Any(s => s.OfferId == t.OfferId && s.TipCode == t.TipCode))
+                .ToList();
+
+        private static List<Guid> SelectOfferIdsFromRequestSelections(IReadOnlyList<CreateTicketSelectionDto> requestSelections) 
+            => requestSelections.Select(s => s.OfferId).ToList();
+
+        private async Task<List<OfferTip>> GetOfferTipsForSelectedOfferIds(IReadOnlyList<Guid> offerIds, CancellationToken cancellationToken) =>
+            await dbContext.OfferTips
+                .Where(t => offerIds.Contains(t.OfferId))
+                .ToListAsync(cancellationToken);
+
+        private async Task<int> GetTopOffersCount(IReadOnlyList<Guid> offerIds, CancellationToken cancellationToken) =>
+            await dbContext.Offers
+                .Where(o => offerIds.Contains(o.Id) && o.IsTopOffer)
+                .CountAsync(cancellationToken);
+
+        private static IEnumerable<decimal> ExtractSelectedTipsQuotas(IReadOnlyList<OfferTip> selectedTips)
+            => selectedTips
+                .Select(t => t.Quota!.Value)
+                .AsEnumerable();
+
+        private static void RemoveRequiredBetFundsFromUsersWallet(Entities.Wallet userWallet, decimal betAmount) 
+            => userWallet.Balance -= betAmount;
+
+        private async Task<Entities.Wallet?> GetUserWallet(Guid userId, CancellationToken cancellationToken) =>
+            await dbContext.Wallets
+                .Where(w => w.UserId == userId)
+                .FirstOrDefaultAsync(cancellationToken);
+        
+        private static bool IsUserBalanceExceeded(decimal userWalletBalance, decimal betAmount) =>
+            userWalletBalance < betAmount;
     }
 }

@@ -5,7 +5,7 @@ namespace HattrickApp.Api.Services.BetCalculationService;
 
 public class BetCalculationService : IBetCalculationService
 {
-    public BetCalculationResultDto Calculate(decimal betAmount, IEnumerable<decimal> quotas)
+    public BetCalculationResultDto CalculateBetInfo(decimal betAmount, IEnumerable<decimal> quotas)
     {
         // starting from 1.0, multiply each quota with current total
         decimal totalQuota = quotas.Aggregate(1.0m, (currentTotal, quota) => currentTotal * quota);
