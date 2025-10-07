@@ -4,6 +4,7 @@ using HattrickApp.Api.Common.Dtos;
 using HattrickApp.Api.Common.ResultPattern;
 using HattrickApp.Api.Constants;
 using HattrickApp.Api.Entities;
+using HattrickApp.Api.Enums;
 using HattrickApp.Api.Persistence;
 using HattrickApp.Api.Services.BetCalculationService;
 using MediatR;
@@ -65,6 +66,15 @@ public static  class CreateHandler
             }
             
             RemoveRequiredBetFundsFromUsersWallet(userWallet, request.BetAmount);
+            var newWalletTransaction = new WalletTransaction
+            {
+                Id = Guid.NewGuid(),
+                WalletId = userWallet.Id,
+                Amount = -request.BetAmount,
+                TransactionType = TransactionType.BetPlaced,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
 
             IEnumerable<decimal> selectedTipsQuotas = ExtractSelectedTipsQuotas(selectedTips);
             BetCalculationResultDto betCalculationResult = betCalculationService.CalculateBetInfo(request.BetAmount, selectedTipsQuotas);
@@ -90,6 +100,8 @@ public static  class CreateHandler
             };
             
             await dbContext.Tickets.AddAsync(ticket, cancellationToken);
+            await dbContext.WalletTransactions.AddAsync(newWalletTransaction, cancellationToken);
+            
             await dbContext.SaveChangesAsync(cancellationToken);
             
             var response = new CreateResponse

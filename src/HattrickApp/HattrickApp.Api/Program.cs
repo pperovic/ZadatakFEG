@@ -1,7 +1,6 @@
 using Carter;
 using FluentValidation;
 using HattrickApp.Api.Common.ConfigurationOptions;
-using HattrickApp.Api.Features.Ticket.GetAllByUserId;
 using HattrickApp.Api.Persistence;
 using HattrickApp.Api.Seeder;
 using HattrickApp.Api.Services.BetCalculationService;
@@ -25,11 +24,11 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.Configure<MediatrOptions>(builder.Configuration.GetSection(nameof(MediatrOptions)));
 
-builder.Services.AddMediatR(config =>
+builder.Services.AddMediatR(configuration =>
 {
     MediatrOptions? mediatrOptions = builder.Configuration.GetSection(nameof(MediatrOptions)).Get<MediatrOptions>();
-    config.RegisterServicesFromAssembly(typeof(Program).Assembly);
-    config.LicenseKey = mediatrOptions?.CommunityLicenseKey;
+    configuration.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    configuration.LicenseKey = mediatrOptions?.CommunityLicenseKey;
 });
 
 builder.Services.AddScoped<IBetCalculationService, BetCalculationService>();

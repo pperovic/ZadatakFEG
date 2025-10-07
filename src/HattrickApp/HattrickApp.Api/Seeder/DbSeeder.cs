@@ -97,8 +97,8 @@ public static class DbSeeder
             IsTopOffer = true,
             Tips = new List<OfferTip>
             {
-                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWin, },
-                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.Draw,  },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.FirstCompetitorWin },
+                new() { Id = Guid.NewGuid(), TipCode = TipRegistry.Draw },
                 new() { Id = Guid.NewGuid(), TipCode = TipRegistry.SecondCompetitorWin }
             }
         };
