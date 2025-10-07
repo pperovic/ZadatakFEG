@@ -4,6 +4,7 @@ using HattrickApp.Api.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HattrickApp.Api.Persistence.Migrations
 {
     [DbContext(typeof(HattrickAppDbContext))]
-    partial class HattrickAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251007163545_AddMissingNavigationPropertyOfferToTicketSelection")]
+    partial class AddMissingNavigationPropertyOfferToTicketSelection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

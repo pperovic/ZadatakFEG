@@ -7,4 +7,5 @@ public static class EndpointRoutes
     public const string Create = nameof(Create);
     public const string CalculatePossiblePayoff = nameof(CalculatePossiblePayoff);
     public const string GetByUserId = nameof(GetByUserId);
+    public const string GetAllByUserId = nameof(GetAllByUserId);
 }

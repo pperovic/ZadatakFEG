@@ -16,9 +16,9 @@ public static class GetAllHandler
         public async Task<Result<PagedResultDto<GetAllResponse>>> Handle(Query request, CancellationToken cancellationToken)
         {
             IQueryable<Entities.Offer> query = dbContext.Offers
+                .AsNoTracking()
                 .Include(o => o.Tips)
-                .OrderBy(o => o.StartTime)
-                .AsNoTracking();
+                .OrderBy(o => o.StartTime);
             
             int totalCount = await query.CountAsync(cancellationToken);
 

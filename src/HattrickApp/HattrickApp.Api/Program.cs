@@ -1,9 +1,11 @@
 using Carter;
 using FluentValidation;
 using HattrickApp.Api.Common.ConfigurationOptions;
+using HattrickApp.Api.Features.Ticket.GetAllByUserId;
 using HattrickApp.Api.Persistence;
 using HattrickApp.Api.Seeder;
 using HattrickApp.Api.Services.BetCalculationService;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -11,6 +13,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
+config.Scan(typeof(Program).Assembly);
 
 builder.Services.AddDbContext<HattrickAppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
